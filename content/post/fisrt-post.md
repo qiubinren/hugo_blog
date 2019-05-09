@@ -1,6 +1,7 @@
 ---
-title: "My First Post"
-date: 2019-05-09T16:45:53+08:ght: 70
+title: "Fisrt Post"
+date: 2019-05-09T17:08:42+08:00
+weight: 70
 keywords: ["hugo"]
 description: "第一篇文章"
 tags: ["hugo", "pages"]
@@ -8,4 +9,5 @@ categories: ["pages"]
 author: ""
 ---
 
-第一篇文章test
+这里是文章内容
+
