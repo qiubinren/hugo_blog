@@ -1,6 +1,6 @@
 ---
 title: "Linux内核bug导致java进程僵死"
-date: 2019-05-19T23:19:56+08:00
+date: 2017-11-15T23:19:56+08:00
 draft: false
 tags: ["Java", "Linux", "Kernel"]
 categories: ["Java", "Linux", "Kernel"]
