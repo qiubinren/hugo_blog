@@ -19,26 +19,26 @@ categories: ["Cpp", "Java", "Jni", "Swig"]
 <!--more-->
 
 ## Swig
-### 简介
+**简介**
 下面摘自[SWIG官网](http://www.swig.org/)
 
 > SWIG是个帮助使用C或者C++编写的软件能与其它各种高级编程语言进行嵌入联接的开发工具。SWIG能应用于各种不同类型的语言包括常用脚本编译语言例如Perl, PHP, Python, Tcl, Ruby and PHP。支持语言列表中 也包括非脚本编译语言，例如C#, Common Lisp (CLISP, Allegro CL, CFFI, UFFI), Java, Modula-3, OCAML以及R，甚至是编译器或者汇编的计划应用（Guile, MzScheme, Chicken）。SWIG普遍应用于创建高级语言解析或汇编程序环境，用户接口，作为一种用来测试C/C++或进行原型设计的工具。SWIG还能够导出 XML或Lisp s-expressions格式的解析树。SWIG可以被自由使用，发布，修改用于商业或非商业中。
 
-### 安装
+**安装**
 
-1. 到官网下载最新版swig
+到官网下载最新版swig
 
 ```shell
 wget https://jaist.dl.sourceforge.net/project/swig/swig/swig-3.0.12/swig-3.0.12.tar.gz
 ```
 
-2. 安装gcc、g++(已有则跳过此步)
+安装gcc、g++(已有则跳过此步)
 
 ```
 yum -y install gcc automake autoconf libtool make
 ```
 
-3. 安装PCRE
+安装PCRE
 
 ``` shell
 wget https://jaist.dl.sourceforge.net/project/pcre/pcre/8.39/pcre-8.39.tar.gz
@@ -48,7 +48,7 @@ cd pcre-8.39
 make && make install
 ```
 
-4. 解压swig并且编译
+解压swig并且编译
 
 ``` shell
 tar -zxvf swig-3.0.12.tar.gz
@@ -57,21 +57,21 @@ cd swig-3.0.12
 make && make install
 ```
 
-5. 查看安装是否成功
+查看安装是否成功
 
 ``` shell
 swig -version
 ```
 
-### 来一个Swig的Hello World
+**来一个Swig的Hello World**
 
 现在就可以写一个Swig版的Hello World例子，Java调用C++动态库。程序结构和调用关系大致如下图所示，最左边一列是C++程序的常见结构，中间一列是Swig在编码时扮演的角色，以及其生成的接口代码调用关系，最右边就是我们的Java应用了。
 
 ![p2](/img/2017-10-06-p2.png)
 
-#### 首先编写一个C++动态库
+**首先编写一个C++动态库**
 
-1. 目录结构
+目录结构
 
 ``` shell
 tree test
@@ -88,7 +88,7 @@ test
     └── hello4j.i
 ```
 
-2. HelloAPI.h代码
+HelloAPI.h代码
 
 ``` 
 #ifndef __HELLO_API_H__  
@@ -123,7 +123,7 @@ extern "C"
 #endif
 ```
 
-3. HelloImpl.h代码
+HelloImpl.h代码
 
 ``` c++
 #ifndef __GEOMETRY_IMPL_H__  
@@ -142,7 +142,7 @@ public:
 #endif
    ```
 
-4. HelloFactoryImpl.h 代码
+HelloFactoryImpl.h 代码
 
 ``` c++
 #ifndef __HELLO_FACTORY_IMPL_H__  
@@ -162,7 +162,7 @@ public:
 #endif 
 ```
 
-5. HelloImpl.cpp代码
+HelloImpl.cpp代码
 
 ``` c++
 #include "HelloImpl.h"  
@@ -179,7 +179,7 @@ const char* HelloImpl::sayHello()
 }
    ```
 
-6. HelloFactoryImpl.cpp代码
+HelloFactoryImpl.cpp代码
 
 ``` c++
 #include "HelloFactoryImpl.h"  
@@ -207,7 +207,7 @@ HelloFactory* getHelloFactoryInstance()
 }
 ```
 
-7. Makefile写法
+Makefile写法
 
 ``` makefile
 OBJS=HelloFactoryImpl.o \
@@ -233,13 +233,13 @@ install:
 
 这个动态库里包含虚基类，纯虚函数，继承，C函数，静态变量等概念，几乎模拟了大部分动态库的情况。
 
-#### 使用swig将C++接口转为Java接口
+**使用swig将C++接口转为Java接口**
 
-1. 编写.i文件(hello4j.i)
+编写.i文件(hello4j.i)
 
 module是模块名。SWIG将C函数通过Java的JNI转换为JAVA方法，这些方法都以静态方法的方式封装到一个与模块名同名的Java类中。  
 
-2. ``` c++
+``` c++
 %module hello4j
 %{
 #include "HelloAPI.h"
@@ -247,7 +247,7 @@ module是模块名。SWIG将C函数通过Java的JNI转换为JAVA方法，这些�
 %include "HelloAPI.h"
 ```
 
-2. 执行Swig命令
+执行Swig命令
 
 ``` shell
 swig -c++ -java -package com.test -outdir ./ -I../inc hello4j.i
@@ -281,7 +281,7 @@ swig -c++ -java -package com.test -outdir ./ -I../inc hello4j.i
 >
 > ​	每一个C++类都被转化为与之对应的Java类，并且类名，方法明完全一样。
 
-4. 编写Makefile编译hello4j_wrap.cxx文件为.so动态库
+编写Makefile编译hello4j_wrap.cxx文件为.so动态库
 
 ``` makefile
 OBJS=hello4j_wrap.o
@@ -306,7 +306,7 @@ install:
 
 到目前为止我们的操作都是为了生成libhello4j.so动态库，jni就是通过这个库来调用我们真正想调用的C++动态库中的类和方法的。
 
-#### 编译Swig生成的java并且尝试调用
+**编译Swig生成的java并且尝试调用**
 
 在swig目录中执行下面的命令生成.class文件。
 
