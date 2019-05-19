@@ -1,5 +1,5 @@
 ---
-title: "2017 10 06 JavaCpp混合编程 Swig的使用"
+title: "JavaCpp混合编程 Swig的使用"
 date: 2017-10-06T15:46:30+08:00
 draft: false
 tags: ["Cpp", "Java", "Jni", "Swig"]
