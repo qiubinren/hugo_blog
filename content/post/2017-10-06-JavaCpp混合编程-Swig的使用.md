@@ -1,5 +1,5 @@
 ---
-title: "JavaCpp混合编程 Swig的使用"
+title: "Java Cpp混合编程 Swig的使用"
 date: 2017-10-06T15:46:30+08:00
 draft: false
 tags: ["Cpp", "Java", "Jni", "Swig"]
@@ -10,11 +10,11 @@ categories: ["Cpp", "Java", "Jni", "Swig"]
 
 ## 江苏移动服开系统云化遇到的问题
 
-江苏移动BOSS系统云化风风火火进行中，目前轮到服务开通子系统了。
+江苏移动`BOSS`系统云化风风火火进行中，目前轮到服务开通子系统了。
 
-服务开通子系统接收前台办理业务请求，或者信控系统触发的停复机工单，生成实际的设备物理指令发往真正的网元设备。C++老系统为这些不同厂商不同协议的网元设备实现了不同通信协议的动态库，涉及到几十个大大小小不同通信协议的设备，部分老设备几乎处于联系不到厂商负责人的状态。
+服务开通子系统接收前台办理业务请求，或者信控系统触发的停复机工单，生成实际的设备物理指令发往真正的网元设备。`C++`老系统为这些不同厂商不同协议的网元设备实现了不同通信协议的动态库，涉及到几十个大大小小不同通信协议的设备，部分老设备几乎处于联系不到厂商负责人的状态。
 
-云化直接使用Java重写这类通信动态库，风险比较大，而且也面临外围厂商联调配合的问题。所以想复用这部分设备通信动态库，首先把动态库代码，从AIX迁移到X86主机重新编译，这部分不做介绍，主要介绍Java侧如何调用C++动态库的问题，很容易就会想到写Jni来实现Java和Cpp混合编程，这边我们选择Swig自动生成Jni代码。
+云化直接使用`Java`重写这类通信动态库，风险比较大，而且也面临外围厂商联调配合的问题。所以想复用这部分设备通信动态库，首先把动态库代码，从`AIX`迁移到`X86`主机重新编译，这部分不做介绍，主要介绍`Java`侧如何调用`C++`动态库的问题，很容易就会想到写`Jni`来实现`Java`和`Cpp`混合编程，这边我们选择`Swig`自动生成`Jni`代码。
 
 <!--more-->
 
@@ -26,13 +26,13 @@ categories: ["Cpp", "Java", "Jni", "Swig"]
 
 **安装**
 
-到官网下载最新版swig
+到官网下载最新版`swig`
 
 ```shell
 wget https://jaist.dl.sourceforge.net/project/swig/swig/swig-3.0.12/swig-3.0.12.tar.gz
 ```
 
-安装gcc、g++(已有则跳过此步)
+安装`gcc`、`g++`(已有则跳过此步)
 
 ```
 yum -y install gcc automake autoconf libtool make
@@ -48,7 +48,7 @@ cd pcre-8.39
 make && make install
 ```
 
-解压swig并且编译
+解压`swig`并且编译
 
 ``` shell
 tar -zxvf swig-3.0.12.tar.gz
@@ -65,7 +65,7 @@ swig -version
 
 **来一个Swig的Hello World**
 
-现在就可以写一个Swig版的Hello World例子，Java调用C++动态库。程序结构和调用关系大致如下图所示，最左边一列是C++程序的常见结构，中间一列是Swig在编码时扮演的角色，以及其生成的接口代码调用关系，最右边就是我们的Java应用了。
+现在就可以写一个`Swig`版的`Hello World`例子，`Java`调用`C++`动态库。程序结构和调用关系大致如下图所示，最左边一列是`C++`程序的常见结构，中间一列是`Swig`在编码时扮演的角色，以及其生成的接口代码调用关系，最右边就是我们的`Java`应用了。
 
 ![p2](/img/2017-10-06-p2.png)
 
@@ -88,7 +88,7 @@ test
     └── hello4j.i
 ```
 
-HelloAPI.h代码
+`HelloAPI.h`代码
 
 ``` 
 #ifndef __HELLO_API_H__  
@@ -123,7 +123,7 @@ extern "C"
 #endif
 ```
 
-HelloImpl.h代码
+`HelloImpl.h`代码
 
 ``` c++
 #ifndef __GEOMETRY_IMPL_H__  
@@ -140,9 +140,9 @@ public:
         virtual const char* sayHello();  
 };  
 #endif
-   ```
+```
 
-HelloFactoryImpl.h 代码
+`HelloFactoryImpl.h`代码
 
 ``` c++
 #ifndef __HELLO_FACTORY_IMPL_H__  
@@ -162,7 +162,7 @@ public:
 #endif 
 ```
 
-HelloImpl.cpp代码
+`HelloImpl.cpp`代码
 
 ``` c++
 #include "HelloImpl.h"  
@@ -177,9 +177,9 @@ const char* HelloImpl::sayHello()
 {  
     return "Hello World!";  
 }
-   ```
+```
 
-HelloFactoryImpl.cpp代码
+`HelloFactoryImpl.cpp`代码
 
 ``` c++
 #include "HelloFactoryImpl.h"  
@@ -207,7 +207,7 @@ HelloFactory* getHelloFactoryInstance()
 }
 ```
 
-Makefile写法
+`Makefile`写法
 
 ``` makefile
 OBJS=HelloFactoryImpl.o \
@@ -227,7 +227,7 @@ install:
 	cp $(TARGET) ../lib
 ```
 
-切换到src目录下执行make命令，编译libhello.so动态库
+切换到`src`目录下执行`gmake`命令，编译`libhello.so`动态库
 
 ![p1](/img/2017-10-06-p1.png)
 
@@ -235,9 +235,9 @@ install:
 
 **使用swig将C++接口转为Java接口**
 
-编写.i文件(hello4j.i)
+编写`.i`文件(`hello4j.i`)
 
-module是模块名。SWIG将C函数通过Java的JNI转换为JAVA方法，这些方法都以静态方法的方式封装到一个与模块名同名的Java类中。  
+`module`是模块名。`SWIG`将C函数通过`Java`的JNI转换为`JAVA`方法，这些方法都以静态方法的方式封装到一个与模块名同名的`Java`类中。  
 
 ``` c++
 %module hello4j
@@ -247,7 +247,7 @@ module是模块名。SWIG将C函数通过Java的JNI转换为JAVA方法，这些�
 %include "HelloAPI.h"
 ```
 
-执行Swig命令
+执行`Swig`命令
 
 ``` shell
 swig -c++ -java -package com.test -outdir ./ -I../inc hello4j.i
@@ -263,8 +263,8 @@ swig -c++ -java -package com.test -outdir ./ -I../inc hello4j.i
 > hello4j.i 
 > 	swig的.i文件
 
-执行这条命令后，将在swig路径下生成几个文件
-  
+执行这条命令后，将在`swig`路径下生成几个文件
+
 > hello4j_wrap.cxx 
 >
 > ​	C++文件，包装器文件。它将C++类的方法转换为C的函数。
@@ -281,7 +281,7 @@ swig -c++ -java -package com.test -outdir ./ -I../inc hello4j.i
 >
 > ​	每一个C++类都被转化为与之对应的Java类，并且类名，方法明完全一样。
 
-编写Makefile编译hello4j_wrap.cxx文件为.so动态库
+编写`Makefile`编译`hello4j_wrap.cxx`文件为`.so`动态库
 
 ``` makefile
 OBJS=hello4j_wrap.o
@@ -302,19 +302,19 @@ install:
         cp $(TARGET) ../lib
 ```
 
-编译hello4j_wrap.cxx需要用到jni的头文件jni.h，在JAVA_HOME中即可找到。-lhello链接刚才上面编译好的动态库。
+编译`hello4j_wrap.cxx`需要用到`jni`的头文件`jni.h`，在`JAVA_HOME`中即可找到。`-lhello`链接刚才上面编译好的动态库。
 
-到目前为止我们的操作都是为了生成libhello4j.so动态库，jni就是通过这个库来调用我们真正想调用的C++动态库中的类和方法的。
+到目前为止我们的操作都是为了生成`libhello4j.so`动态库，`jni`就是通过这个库来调用我们真正想调用的`C++`动态库中的类和方法的。
 
 **编译Swig生成的java并且尝试调用**
 
-在swig目录中执行下面的命令生成.class文件。
+在`swig`目录中执行下面的命令生成`.class`文件。
 
 ``` shell
 javac *.java
 ```
 
-刚才我们执行swig命令时，设置的包名是com.test，所以我们建立目录com/test，把class文件全部移入后打包。
+刚才我们执行`swig`命令时，设置的包名是`com.test`，所以我们建立目录`com/test`，把`class`文件全部移入后打包。
 
 ``` shell
 mkdir -p com/test
@@ -327,7 +327,7 @@ mv *.class com/test/
 jar -cvf hello4j.jar ./com
 ```
 
-将刚才的libhello4j.so和libhello.so都放在java的library path下。可以通过运行以下代码查看有哪些路径。
+将刚才的`libhello4j.so`和`libhello.so`都放在`java`的`library path`下。可以通过运行以下代码查看有哪些路径。
 
 ``` java
 class test{  
@@ -337,13 +337,13 @@ class test{
 }
 ```
 
-也可以通过系统LD_LIBRARY_PATH环境变量，将动态库本身的路径设置为java的library path。
+也可以通过系统`LD_LIBRARY_PATH`环境变量，将动态库本身的路径设置为`java`的`library path`。
 
 ``` shell
 export LD_LIBRARY_PATH=/home/qiubinren/test/lib
 ```
 
-编写java应用程序。
+编写`java`应用程序。
 
 ``` java
 import com.test.*;
@@ -371,7 +371,7 @@ class test{
 }
 ```
 
-编译以及执行test程序
+编译以及执行`test`程序
 
 ``` shell
 javac -cp hello4j.jar test.java
@@ -384,6 +384,6 @@ java -cp ./hello4j.jar:. test
 Hello World!
 ```
 
-至此，可以看出我们已经成功使用了Java调用了C++动态库了。
+至此，可以看出我们已经成功使用了`Java`调用了`C++`动态库了。
 
 
