@@ -63,13 +63,13 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.141-b15, mixed mode)
 
 如果`jdk`没有安装或者版本不符自行安装，此处不做介绍。
 
-然后创建`oracle`用户进行安装，此处注意，`root`用户无法安装此`jar`，一旦校验到用户权限会`root`就会失败。执行下面的命令安装，通过ORACLE_HOME`指定`coherence`安装路径。
+然后创建`oracle`用户进行安装，此处注意，`root`用户无法安装此`jar`，一旦校验到用户权限是`root`就会失败。执行下面的命令安装，通过`ORACLE_HOME`指定`coherence`安装路径。
 
 ``` shell
 java -jar fmw_12.2.1.3.0_coherence_quick.jar ORACLE_HOME=/home/oracle/oracle
 ```
 
-至此安装已经成功。
+等待一大串输出后，安装已经成功。
 
 ## coherence目录结构
 
@@ -88,7 +88,7 @@ oracle/coherence/
 
 `bin`是二进制目录，包含启动`coherence`缓存服务器的所有命令行脚本，以及其他命令行工具脚本。
 
-`lib`是`jar`包目录，包含所有`coherence`必须的`jar`文件。
+`lib`是`jar`包目录，包含所有使用`coherence`必须的`jar`文件。
 
 `plugins`是插件目录，包含一些使用`coherence`时，可能需要用到的插件，比如`jvisualvm`。
 
@@ -105,7 +105,7 @@ oracle/
 `-- oui
 ```
 
-然后介绍一下`coherence`基础脚本。`coherence`附带了一组核心脚本文件，可用于`Windows`和`Linux`。这些脚本可以安装后直接使用，来启动`coherence`和与`coherence`实例交互。脚本包括：
+然后介绍一下`coherence`基础脚本。`coherence`附带了一组核心脚本文件，可用于`Windows`和`Linux`。这些脚本可以安装后直接使用，用来启动`coherence`实例或者与`coherence`实例交互。脚本包括：
 
 ``` shell
 tree oracle/coherence/bin/
@@ -275,7 +275,7 @@ java -Dtangosol.coherence.override=/home/oracle/oracle/coherence/config/tangosol
 
 ![p7](/img/2018-08-03-p7.png)
 
-这边图内每个缓存条目是一备一的，实际生产中可以修改配置，让分区缓存备份数量增加，提高可用性。
+这边图内每个缓存条目是一备一的，实际生产中可以修改配置，让分布式缓存备份数量增加，提高可用性。
 
 分布式缓存服务还允许将某些集群节点配置为存储数据节点，而将其他节点配置为不存储数据节点。此配置被称为`local storage`。凡是`localstorage=true`的集群节点为分布式缓存提供缓存存储和备份存储。
 
