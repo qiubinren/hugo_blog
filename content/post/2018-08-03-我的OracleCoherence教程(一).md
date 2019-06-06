@@ -291,11 +291,11 @@ java -Dtangosol.coherence.override=/home/oracle/oracle/coherence/config/tangosol
 
 ![p9](/img/2018-08-03-p9.png)
 
-从图上我们可以看到，通过启动脚本启动`coherence`后的步骤是这样的:
+从图上我们可以看到，通过启动脚本启动`coherence`后的步骤是这样的（图上关于命令行参数部分有误，应该启动第一步就加载命令行参数）:
 
-第一步就是加载`tangosol-coherence.xml`。
+第一步加载所有的命令行参数。
 
-第二步加载所有的命令行参数。
+第二步就是加载`tangosol-coherence.xml`。
 
 第三步加载指定模式重写配置文件(`tangosol-coherence-override-{mode}.xml`)。
 
