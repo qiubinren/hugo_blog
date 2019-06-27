@@ -57,7 +57,7 @@ vim tangosol-coherence-mycluster.xml
 </coherence>
 ```
 
-这边首先配置集群配置，其中`x.x.x.x`填入自己的服务器`ip`。我们采用`WKA`方式进行节点通信。
+这边首先配置集群配置，其中`x.x.x.x`填入自己的服务器`ip`。我们采用`WKA`的方式进行节点通信，一种多节点间类似单播的通信方式。
 
 然后配置缓存配置。
 
@@ -210,7 +210,7 @@ vim startquery.sh
 java -server -showversion -Xms64m -Xmx64m -Dcoherence.distributed.localstorage=false -Dtangosol.coherence.override=../config/tangosol-coherence-mycluster.xml -Dtangosol.coherence.cacheconfig=../config/coherence-cache-config.xml -cp /home/oracle/oracle/coherence/lib/coherence.jar com.tangosol.net.CacheFactory
 ```
 
-赋予权限并且启动`coherence`交互终端。
+赋予权限并且启动`coherence`交互客户端。
 
 ``` shell
 chmod 777 startquery.sh
@@ -293,7 +293,7 @@ Cache Configuration: repl-Test
 Map (repl-Test): 
 ```
 
-写入一个`key`和`value`保存在`coherence`维护的`repl-Test`的全复制缓存。
+写入一个`key`为`aaa`以及`value`为`1`的条目保存在`coherence`维护的`repl-Test`的全复制缓存。
 
 ``` shell
 Map (repl-Test): put aaa 1
@@ -387,7 +387,7 @@ Map (repl-Test): get aaa
 
 进入`repl-Test`缓存后，通过`get`直接获取`aaa`的值成功，`coherence`集群可用。
 
-## 简单应用来读写coherence
+## 编写简单应用读写coherence
 
 首先`ctrl+c`退出刚才启动的两个`coherence`交互客户端。保持只启动一个`coherence`节点，这个节点目前维护了一个名为`repl-Test`的缓存，缓存里存放着`key`为`aaa`，`value`为`1`的记录。
 
@@ -643,7 +643,7 @@ bbb
 
 ## Coherence编程基础
 
-从上面的例子中，我们可以发现`coherence.jar`中给我们提供了一些`api`，让我们可以像操作`java.util.Map`一样，操作`coherence`来存放数据、和其他应用程序交互。
+从上面的例子中，我们可以发现`coherence.jar`中给我们提供了一些`api`，让我们可以像操作`java.util.Map`一样来操作`coherence`来存放数据、和其他应用程序交互。
 
 以`TestCachePut`为例，一个`coherence`进程其实跟网格有关的有`5`步操作。
 
@@ -657,6 +657,6 @@ bbb
 
 有些同学可能这个时候会产生一个疑问，`java.util.Map`的实现有`HashMap`和`ConcurrentHashMap`，一个线程不安全一个线程安全，如果我们这个时候两个应用同时操作`coherence`中同一个`key`，`coherence`可以保证线程安全么？
 
-答案是可以的，`coherence`中的`get`和`put`，以及后面要介绍的`getAll`、`putAll`都属于原子操作，多个应用同时操作相同的`key`并不会有线程安全的问题。
+答案是可以的，`coherence`中的`get`和`put`，以及这边没有介绍的`getAll`和`putAll`都属于原子操作，多个应用同时操作相同的`key`并不会有线程安全的问题。
 
-至此`coherence`编程模型介绍完毕，学习完本章，你有了一个`coherence`全复制缓存集群，以及两个简单的和`coherence`交互的应用程序。
+至此`coherence`最简单的编程模型介绍完毕，学习完本博客，你已经有了一个`coherence`全复制缓存集群，以及两个简单的和`coherence`交互的应用程序，这对后面的教学很重要。
