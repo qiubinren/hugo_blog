@@ -478,7 +478,7 @@ total 16
 
 ``` shell
 mkdir testcacheget
-mv TestCacheGet.java testcacheget
+mv TestCacheGet.class testcacheget
 jar -cvf ../lib/testget.jar testcacheget/
 
 added manifest
@@ -486,7 +486,7 @@ adding: testcacheget/(in = 0) (out= 0)(stored 0%)
 adding: testcacheget/TestCacheGet.class(in = 807) (out= 483)(deflated 40%)
 
 mkdir testcacheput
-mv TestCachePut.java testcacheput
+mv TestCachePut.class testcacheput
 jar -cvf ../lib/testput.jar testcacheput/
 
 added manifest
