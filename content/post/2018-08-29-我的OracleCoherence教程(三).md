@@ -422,8 +422,6 @@ IpMonitor{Addresses=0, Timeout=15s}
 2019-06-28 17:23:44.178/4.390 Oracle Coherence GE 12.2.1.3.0 <Info> (thread=main, member=3): Loaded cache configuration from "file:/home/oracle/oracle/coherence/config/coherence-cache-config.xml"; this document does not refer to any schema definition and has not been validated.
 2019-06-28 17:23:44.357/4.569 Oracle Coherence GE 12.2.1.3.0 <Info> (thread=main, member=3): Created cache factory com.tangosol.net.ExtensibleConfigurableCacheFactory
 2019-06-28 17:23:44.428/4.641 Oracle Coherence GE 12.2.1.3.0 <D5> (thread=ReplicatedCache, member=3): Service ReplicatedCache joined the cluster with senior service member 1
-Users{userName='aaa', age=1}
-Users{userName='aaa', age=1}
 姓名aaa
 年龄1
 2019-06-28 17:23:44.535/4.748 Oracle Coherence GE 12.2.1.3.0 <D5> (thread=ReplicatedCache, member=n/a): Service ReplicatedCache left the cluster
@@ -525,4 +523,4 @@ Map (repl-Test): list
 aaa = Users{userName='aaa', age=1}
 ```
 
-很明显，我们这个网格已经支持了对`Users`这个自定义类的存储、写入、读取支持。
+很明显，我们这个网格已经支持了对`Users`这个自定义类的存储、写入、查询支持。
