@@ -262,7 +262,7 @@ cd pofconfig
 
 ``` shell
 cd ../bin/
-vim startsever.sh
+vim startserver.sh
 ```
 
 在启动参数中加入`-Dtangosol.pof.enabled=true `和`-Dtangosol.pof.config=../pofconfig/pof-config-biz.xml`两个参数为整个`JVM`启用`POF`和指定`POF`配置文件。
@@ -276,7 +276,7 @@ nohup java -server -showversion -Xms1g -Xmx1g -Dtangosol.coherence.localstorage=
 启动`coherence`服务端实例。
 
 ``` shell
-./startsever.sh
+./startserver.sh
 ```
 
 修改应用启动脚本。

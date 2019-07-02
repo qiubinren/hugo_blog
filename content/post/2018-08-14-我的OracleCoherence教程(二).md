@@ -110,8 +110,8 @@ vim coherence-cache-config.xml
 
 ``` shell
 cd ../bin
-touch start-server.sh
-vim start-server.sh
+touch startserver.sh
+vim startserver.sh
 ```
 
 输入内容。
@@ -124,8 +124,8 @@ nohup java -server -showversion -Xms1g -Xmx1g -Dtangosol.coherence.localstorage=
 赋予权限并且启动。
 
 ``` shell
-chmod 777 start-server.sh
-./start-server.sh
+chmod 777 startserver.sh
+./startserver.sh
 ```
 
 回车之后，即可查看目录中的`server.log`文件，查看启动日志。
