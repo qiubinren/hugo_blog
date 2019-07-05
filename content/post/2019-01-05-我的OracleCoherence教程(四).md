@@ -26,7 +26,7 @@ categories: ["Coherence", "Oracle"]
 
 ## 新增Proxy实例
 
-继续使用[我的Oracle Coherence教程（三）](https://www.qiubinren.com/2018-08-29-我的oraclecoherence教程三.html/)中一路改进过来的例子。
+继续使用[我的Oracle Coherence教程(三)](https://www.qiubinren.com/2018-08-29-我的oraclecoherence教程三.html/)中一路改进过来的例子。
 
 一直以来，我们的样例集群，服务端只有一个`server`实例。说实话，也不能算是一个严格意义上的集群，我们现在给这个集群新增一个服务端实例。
 
@@ -204,4 +204,4 @@ java -Dtangosol.coherence.override=../../config/tangosol-coherence-mycluster.xml
 
 修改后执行脚本。
 
-一切正常，写入和读取都成功。
+一切正常，写入和读取都成功。成功使用`proxy`方式访问`coherence`缓存。
