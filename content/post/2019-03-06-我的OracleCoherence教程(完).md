@@ -24,8 +24,9 @@ categories: ["Coherence", "Oracle"]
 
 `Cache`的优势很明显，劣势也很明显，为了读写效率，牺牲了一定的一致性和数据安全，想要使用缓存，下面两个问题是必须解决的。
 
-1. `Cache`挂了，数据丢失恢复问题。
-2. 对`Cache`修改，数据源怎么同步，或者数据源数据变动了，`Cache`怎么同步，这些都是使用`Cache`之前必须考虑的问题。
+1.`Cache`挂了，数据丢失恢复问题。
+
+2.对`Cache`修改，数据源怎么同步，或者数据源数据变动了，`Cache`怎么同步，这些都是使用`Cache`之前必须考虑的问题。
 
 `coherence`说到底也是一类`Cache`中间件，也需要解决这两个问题。
 
@@ -37,11 +38,11 @@ categories: ["Coherence", "Oracle"]
 
 首先这边要了解`Coherence`和数据库的整合方式，目前所知，有5种和数据库的整合方式。
 
-1. `Cache-Aside`方式：这种方式是我们公司目前使用最多的整合方式，除了流量一致性项目外，所有项目基本都是使用这种方式，通过自己开发的加载程序，来管理`coherence`中的数据。应用跟网格的交互通过网格提供的`API`(`get`,`put`,`getAll`,`putAll`)以及`EP`来实现。
+1.`Cache-Aside`方式：这种方式是我们公司目前使用最多的整合方式，除了流量一致性项目外，所有项目基本都是使用这种方式，通过自己开发的加载程序，来管理`coherence`中的数据。应用跟网格的交互通过网格提供的`API`(`get`,`put`,`getAll`,`putAll`)以及`EP`来实现。
 
 ![p1](/img/2019-03-06-p1.png)
 
-2. `Read-Through`方式：`Cohenrece CacheStore`的一种方式，如果在缓存中找不到数据，就会到数据库里再捞取一次，捞取到之后，将数据放入缓存，第二次查询缓存此`key`数据，即可命中。
+2.`Read-Through`方式：`Cohenrece CacheStore`的一种方式，如果在缓存中找不到数据，就会到数据库里再捞取一次，捞取到之后，将数据放入缓存，第二次查询缓存此`key`数据，即可命中。
 
 ![p2](/img/2019-03-06-p2.png)
 
@@ -57,7 +58,7 @@ categories: ["Coherence", "Oracle"]
 
 ![p3](/img/2019-03-06-p3.png)
 
-3. `Write-Through`方式：`Cohenrece CacheStore`的一种方式，它支持所有的`Read-Through`方式行为，在缓存中写入或修改数据，`coherence`会**同步**写入数据库。
+3.`Write-Through`方式：`Cohenrece CacheStore`的一种方式，它支持所有的`Read-Through`方式行为，在缓存中写入或修改数据，`coherence`会**同步**写入数据库。
 
 ![p4](/img/2019-03-06-p4.png)
 
@@ -71,7 +72,7 @@ categories: ["Coherence", "Oracle"]
 
 ![p5](/img/2019-03-06-p5.png)
 
-4. `Write-Behind`方式： `Cohenrece CacheStore`的一种方式，它支持所有的`Read-Through`方式行为，在缓存中写入或修改数据，会把数据变动情况写入`coherence`内部队列进行排队，然后直接告诉应用写入成功，最后`coherence`会**按数据变化顺序排队间隔一段时间后异步**写入数据库。
+4.`Write-Behind`方式： `Cohenrece CacheStore`的一种方式，它支持所有的`Read-Through`方式行为，在缓存中写入或修改数据，会把数据变动情况写入`coherence`内部队列进行排队，然后直接告诉应用写入成功，最后`coherence`会**按数据变化顺序排队间隔一段时间后异步**写入数据库。
 
 ![p6](/img/2019-03-06-p6.png)
 
@@ -85,7 +86,7 @@ categories: ["Coherence", "Oracle"]
 
 ![p7](/img/2019-03-06-p7.png)
 
-5. `Refresh-Ahead`方式：这种方式用于实现经常读取，但经常更改的数据的自动和异步重新加载。`Coherence Cache`未命中的行为和`Read-though`一样。主要区别在`Refresh-Ahead`方式给所有数据都配置了过期时间和重新读取间隔。自动从数据库中刷新即将过期的数据。
+5.`Refresh-Ahead`方式：这种方式用于实现经常读取，但经常更改的数据的自动和异步重新加载。`Coherence Cache`未命中的行为和`Read-though`一样。主要区别在`Refresh-Ahead`方式给所有数据都配置了过期时间和重新读取间隔。自动从数据库中刷新即将过期的数据。
 
 ![p8](/img/2019-03-06-p8.png)
 
@@ -93,16 +94,19 @@ categories: ["Coherence", "Oracle"]
 
 移动流量一致性项目核心需求：
 
-1. 实现累积量及时提醒的基础是累积量累加及时率，每天大量累积量实时累加十分重要。
-2. 每天查询累积量的请求也很多。（现阶段查询请求主要查的还是数据库，如果采用缓存，缓存和数据库之间的一致性不能差距太大）
+1.实现累积量及时提醒的基础是累积量累加及时率，每天大量累积量实时累加十分重要。
+
+2.每天查询累积量的请求也很多。（现阶段查询请求主要查的还是数据库，如果采用缓存，缓存和数据库之间的一致性不能差距太大）
 
 很明显这是一个写多读也多及时率要求还比较高的场景，对缓存和数据库之间的一致性也有一定的要求。简单的将累积量加载进`coherence`，并不能很好覆盖需求，好像很棘手。
 
 再来看看上面介绍的`CacheStore`中`Write-Behind`方式的特点：
 
-1. 支持所有的`Read-Through`方式行为。我不用加载全省累积量数据造成业务停顿，处理哪个用户，让`coherence`自动加载哪个用户。
-2. 合并一段时间内的同`key`的写操作，只把`coherence`内更新一次数据库，给数据库减轻压力，大量写集中在`coherence`中，再由`coherence`异步同步数据库。
-3. `coherence`和数据库一致性差异时间可控，写入延迟支持可配。
+1.支持所有的`Read-Through`方式行为。我不用加载全省累积量数据造成业务停顿，处理哪个用户，让`coherence`自动加载哪个用户。
+
+2.合并一段时间内的同`key`的写操作，只把`coherence`内更新一次数据库，给数据库减轻压力，大量写集中在`coherence`中，再由`coherence`异步同步数据库。
+
+3.`coherence`和数据库一致性差异时间可控，写入延迟支持可配。
 
 可以说比较全面覆盖了上面的需求和问题。
 
@@ -112,19 +116,19 @@ categories: ["Coherence", "Oracle"]
 
 ## 遇到的问题与解决
 
-1. `Write-Behind`方式带来的复杂性。
+1.`Write-Behind`方式带来的复杂性。
 
 (1)想使用`Write-Behind`方式，不可避免要带来一些复杂性。比如要为每张数据库表实现一个继承`CacheStore`接口的数据同步类，每个类又要实现`CacheLoader.load()`, `CacheLoader.loadAll()`，`CacheStore.store()`， `CacheStore.storeAll()`这四个接口。
 
 (2)为避免`coherence`每次从写入或者加载数据库数据每次都会重新新建`session`，对数据库链接消耗比较大，需要为`coherence`开启`CacheStore`的节点整合链接池的包，以及数据库操作配置。
 
-2. 对于`coherence`来说无论新增还是修改，都会触发`store`同步数据库，接口被调用后无法区分本次操作是插入还是修改。
+2.对于`coherence`来说无论新增还是修改，都会触发`store`同步数据库，接口被调用后无法区分本次操作是插入还是修改。
 
 比较简单的想法是在实现`CacheStore.store()`， `CacheStore.storeAll()`两个接口时，每次请求`select`一次要同步数据库的数据的`key`在数据库中是否存在。存在则更新，不存在则插入，这样本来一次插入变成了一次查询和一次更新两次交互，比较消耗性能。
 
 因为公司使用的是`oracle`数据库，没有`mysql`中的`upsert`操作，在`Oracle`中使用`merge into`实现类似`mysql`的`upsert`功能，若存在则更新，若不存在则插入，只和数据库交互一次。
 
-3. 开启`CacheStore`后，也会遇到缓存穿透问题，请求大量数据库中不存在的数据，比如消息排重业务，大量都是未处理的消息，真正处理过的消息反而是少数，造成缓存形同虚设，被穿透。
+3.开启`CacheStore`后，也会遇到缓存穿透问题，请求大量数据库中不存在的数据，比如消息排重业务，大量都是未处理的消息，真正处理过的消息反而是少数，造成缓存形同虚设，被穿透。
 
 对于这个问题业界一般有两种解决方案。
 
@@ -134,7 +138,7 @@ categories: ["Coherence", "Oracle"]
 
 目前我们采用的方案就是，实现这类业务表的`CacheStore`类的时候，让`CacheLoader.load()`,`CacheLoader.loadAll()`两个方法直接返回`null`，数据加载还是使用加载程序，加载时调用`store`不同步数据库(特殊的`store`和`storeAll`实现，增加是否同步标志，加载时为`0`，应用更新传入`1`)。
 
-4. `CacheStore`对`coherence EP`的影响。
+4.`CacheStore`对`coherence EP`的影响。
 
 `coherence EP`提供在`coherence`服务端节点对数据的排队处理，一旦开启`CacheStore`后，`EP`中使用`entry.getValue()`获取`coherence`内存数据一定要慎之慎之，本来一次简单的内存操作，开了`CacheStore`，缓存命中失败就变成了会触发`load`的数据库操作。
 
