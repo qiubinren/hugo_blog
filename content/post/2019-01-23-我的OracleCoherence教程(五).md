@@ -492,7 +492,9 @@ Users{userName='aaa', age=4}
 
 ## 调用服务示例
 
-继续使用上面的集群。这边演示一个使用代理进行同步服务调用。
+继续使用上面的集群。
+
+首先，这边演示的是集群内成员使用调用服务，执行单次任务的例子（模仿我们的加载程序），所以首先需要把`我的OracleCoherence教程(四)`中客户端启动脚本中增加的`TCMP=false`操作删掉，并且回退为` -Dtangosol.coherence.override`配置。
 
 下面是使用`AbstractInvocable`类创建可调用代理的示例。实现了一个名为`MemberStatus`的类，实现`run`方法，获取该执行该任务的节点所在计算机的`cpu`数量，返回给客户端。
 

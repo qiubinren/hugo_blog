@@ -24,6 +24,8 @@ categories: ["Coherence", "Oracle"]
 
 这就是所谓的`Coherence Proxy`。
 
+<!--more-->
+
 ## 新增Proxy实例
 
 继续使用[我的Oracle Coherence教程(三)](https://www.qiubinren.com/2018-08-29-我的oraclecoherence教程三.html/)中一路改进过来的例子。
@@ -188,20 +190,61 @@ cd ../bin/
 vim gettest.sh
 ```
 
-先修改`gettest.sh`，把`cacheconfig`改为我们刚才修改的内容。
+先修改`gettest.sh`，把`cacheconfig`改为我们刚才修改的内容。并且去除`-Dtangosol.coherence.override`配置，增加`-Dtangosol.coherence.tcmp.enabled=false`配置。
 
 ``` shell
 #!/bin/bash
-java -Dtangosol.coherence.override=../../config/tangosol-coherence-mycluster.xml -Dtangosol.coherence.cacheconfig=../config/coherence-cache-config-client.xml -Dtangosol.pof.enabled=true -Dtangosol.pof.config=../../pofconfig/pof-config-biz.xml -cp ../lib/testget.jar:../../lib/coherence.jar:../lib/biz.jar testcacheget.TestCacheGet
+java -Dtangosol.coherence.tcmp.enabled=false -Dtangosol.coherence.cacheconfig=../config/coherence-cache-config-client.xml -Dtangosol.pof.enabled=true -Dtangosol.pof.config=../../pofconfig/pof-config-biz.xml -cp ../lib/testget.jar:../../lib/coherence.jar:../lib/biz.jar testcacheget.TestCacheGet
 ```
 
 再修改`puttest.sh`，修改的地方一样。
 
 ``` shell
 #!/bin/bash
-java -Dtangosol.coherence.override=../../config/tangosol-coherence-mycluster.xml -Dtangosol.coherence.cacheconfig=../config/coherence-cache-config-client.xml -Dtangosol.pof.enabled=true -Dtangosol.pof.config=../../pofconfig/pof-config-biz.xml -cp ../lib/testput.jar:../../lib/coherence.jar:../lib/biz.jar testcacheput.TestCachePut
+java -Dtangosol.coherence.tcmp.enabled=false -Dtangosol.coherence.cacheconfig=../config/coherence-cache-config-client.xml -Dtangosol.pof.enabled=true -Dtangosol.pof.config=../../pofconfig/pof-config-biz.xml -cp ../lib/testput.jar:../../lib/coherence.jar:../lib/biz.jar testcacheput.TestCachePut
 ```
 
-修改后执行脚本。
+这样修改之后，两个客户端其实已经不会加入集群，不再跟集群主节点进行`TCMP`（一种`TCP`和`UDP`混合使用的协议）通信，而转为与代理节点进行`TCP`通信。
+
+## 修改客户端代码
+
+最后我们还需要修改客户端`get`和`put`代码。
+
+还记得，我们前面两个客户端代码里都包含的`CacheFactory.ensureCluster();`和`CacheFactory.shutdown();`这两句么？这两句一旦使用代理就必须删去，代理方式连接集群的客户端只能访问，无法控制集群节点的启停。
+
+修改后，重新编译。
+
+``` shell
+javac -classpath ../../lib/coherence.jar:../lib/biz.jar TestCacheGet.java
+javac -classpath ../../lib/coherence.jar:../lib/biz.jar TestCachePut.java
+mv TestCacheGet.class testcacheget
+jar -cvf ../lib/testget.jar testcacheget/
+mv TestCachePut.class testcacheput
+jar -cvf ../lib/testput.jar testcacheput/
+```
+
+然后运行。
+
+``` shell
+./puttest.sh 
+
+2019-07-09 09:14:10.972/0.970 Oracle Coherence 12.2.1.3.0 <Info> (thread=main, member=n/a): Loaded operational configuration from "jar:file:/home/oracle/oracle/coherence/lib/coherence.jar!/tangosol-coherence.xml"
+2019-07-09 09:14:11.132/1.129 Oracle Coherence 12.2.1.3.0 <Info> (thread=main, member=n/a): Loaded operational overrides from "jar:file:/home/oracle/oracle/coherence/lib/coherence.jar!/tangosol-coherence-override-dev.xml"
+2019-07-09 09:14:11.132/1.130 Oracle Coherence 12.2.1.3.0 <D5> (thread=main, member=n/a): Optional configuration override "/tangosol-coherence-override.xml" is not specified
+2019-07-09 09:14:11.135/1.133 Oracle Coherence 12.2.1.3.0 <D5> (thread=main, member=n/a): Optional configuration override "cache-factory-config.xml" is not specified
+2019-07-09 09:14:11.135/1.133 Oracle Coherence 12.2.1.3.0 <D5> (thread=main, member=n/a): Optional configuration override "cache-factory-builder-config.xml" is not specified
+2019-07-09 09:14:11.136/1.133 Oracle Coherence 12.2.1.3.0 <D5> (thread=main, member=n/a): Optional configuration override "/custom-mbeans.xml" is not specified
+
+Oracle Coherence Version 12.2.1.3.0 Build 68243
+ Grid Edition: Development mode
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+2019-07-09 09:14:11.392/1.389 Oracle Coherence GE 12.2.1.3.0 <Info> (thread=main, member=n/a): Loaded cache configuration from "file:/home/oracle/oracle/coherence/app/config/coherence-cache-config-client.xml"; this document does not refer to any schema definition and has not been validated.
+2019-07-09 09:14:11.834/1.831 Oracle Coherence GE 12.2.1.3.0 <Info> (thread=main, member=n/a): Created cache factory com.tangosol.net.ExtensibleConfigurableCacheFactory
+2019-07-09 09:14:11.967/1.964 Oracle Coherence GE 12.2.1.3.0 <Info> (thread=ExtendTcpCacheService-REPL:TcpInitiator, member=n/a): Loaded POF configuration from "file:/home/oracle/oracle/coherence/pofconfig/pof-config-biz.xml"
+2019-07-09 09:14:12.049/2.047 Oracle Coherence GE 12.2.1.3.0 <Info> (thread=ExtendTcpCacheService-REPL:TcpInitiator, member=n/a): Loaded included POF configuration from "jar:file:/home/oracle/oracle/coherence/lib/coherence.jar!/coherence-pof-config.xml"
+2019-07-09 09:14:12.629/2.626 Oracle Coherence GE 12.2.1.3.0 <Info> (thread=ExtendTcpCacheService-REPL:TcpInitiator, member=n/a): The cluster name has not been configured, a value of "oracle's cluster" has been automatically generated
+写入users成功
+```
 
 一切正常，写入和读取都成功。成功使用`proxy`方式访问`coherence`缓存。
